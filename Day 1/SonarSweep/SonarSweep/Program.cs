@@ -13,14 +13,20 @@ namespace SonarSweep
         static void Part1()
         {
             string[] lines = System.IO.File.ReadAllLines(@"C:\Users\sande\Desktop\Projects\AoC2021\Day 1\input.txt");
+
             int prev = Int32.Parse(lines[0]);
+
             int counter = 0;
+
             for (int i = 1; i < lines.Length; i++)
             {
                 string line = lines[i];
+
                 int number = Int32.Parse(line);
+
                 if (number > prev)
                     counter++;
+
                 prev = number;
             }
             Console.Write(counter);
@@ -29,18 +35,25 @@ namespace SonarSweep
         static void Part2()
         {
             string[] lines = System.IO.File.ReadAllLines(@"C:\Users\sande\Desktop\Projects\AoC2021\Day 1\input.txt");
+
             Queue<int> queue = new Queue<int>();
+
+            // Initialize queue with the first three values.
             queue.Enqueue(Int32.Parse(lines[0]));
             queue.Enqueue(Int32.Parse(lines[1]));
             queue.Enqueue(Int32.Parse(lines[2]));
+
             int counter = 0;
 
             for (int i = 3; i < lines.Length; i++)
             {
                 int value = Int32.Parse(lines[i]);
                 int queueValue = queue.Dequeue();
+
+                // If the value entering the queue is greater than the one leaving, the overall sum will increase.
                 if (value > queueValue)
                     counter++;
+
                 queue.Enqueue(value);
             }
             Console.Write(counter);

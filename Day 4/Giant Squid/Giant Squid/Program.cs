@@ -12,6 +12,7 @@ namespace Giant_Squid
 
             int[] bingoInput = Array.ConvertAll(lines[0].Split(','), int.Parse);
 
+            // Save which BingoBoards contain every number for faster lookup.
             Dictionary<int, List<BingoBoard>> whoHasThisNumber = new Dictionary<int, List<BingoBoard>>();
 
             List<BingoBoard> bingoBoards = new List<BingoBoard>();
@@ -25,13 +26,16 @@ namespace Giant_Squid
                 {
                     string[] line = lines[j].Split();
                     line = line.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
                     int[] row = Array.ConvertAll(line, int.Parse);
+
                     board.Add(row);
                     allNumbers.AddRange(row);
                 }
 
                 BingoBoard bingoBoard = new BingoBoard(board.ToArray());
                 bingoBoards.Add(bingoBoard);
+
                 foreach (int n in allNumbers)
                 {
                     if (!whoHasThisNumber.ContainsKey(n))
@@ -40,24 +44,31 @@ namespace Giant_Squid
                         whoHasThisNumber[n].Add(bingoBoard);
                 }
             }
+
+            // List with all boards that have yet won
             List<BingoBoard> winnerBoards = new List<BingoBoard>();
 
             for (int i = 0; i < bingoInput.Length; i++)
             {
+                // Number rolled from the bingo
                 int number = bingoInput[i];
 
                 foreach (BingoBoard bingoBoard in whoHasThisNumber[number])
                 {
                     bingoBoard.mark(number);
 
+                    // No board can have bingo before 5 numbers have been rolled
                     if (i >= 5)
                         if (bingoBoard.hasBingo() && !winnerBoards.Contains(bingoBoard))
                         {
+                            // If there are no more bingoBoards left in the list, this one is the last one to
+                            // get bingo and should output the final answer.
                             if (bingoBoards.Count == 1)
                             {
                                 Console.Write(bingoBoard.outputWinner(number));
                                 return;
                             }
+                            // If there are more than 1 boards left, continue the rally without this winner.
                             else
                             {
                                 bingoBoards.Remove(bingoBoard);
@@ -72,8 +83,13 @@ namespace Giant_Squid
     class BingoBoard
     {
         int[,] numbers = new int[5, 5];
+
+        // True if number has been marked, False othewise.
         bool[,] check = new bool[5, 5];
+
+        // Save 2D indices for every number on the card for faster lookup.
         Dictionary<int, (int, int)> numberToIndex = new Dictionary<int, (int, int)>();
+
         public BingoBoard(int[][] numbers)
         {
             for (int i = 0; i < 5; i++)
@@ -117,6 +133,7 @@ namespace Giant_Squid
 
         public int outputWinner(int n)
         {
+            // Calculate the sum of all unmarked numbers
             int sum = 0;
             for (int i = 0; i < 5; i++)
                 for (int j = 0; j < 5; j++)

@@ -7,15 +7,17 @@ namespace DIve_
         static void Main(string[] args)
         {
             string[] lines = System.IO.File.ReadAllLines(@"C:\Users\sande\OneDrive\Desktop\Projects\AoC2021\Day 2\DIve!\input.txt");
+
             int depth = 0;
             int hor = 0;
             int aim = 0;
 
-            foreach(string line in lines)
+            foreach (string line in lines)
             {
-                string[] values = line.Split();
+                string[] values = line.Split(); // E.g. Forward 8 becomes "Forward" and "8".
+
                 string direction = values[0];
-                int value = Int32.Parse(values[1]); 
+                int value = Int32.Parse(values[1]);
 
                 switch (direction)
                 {
@@ -40,7 +42,6 @@ namespace DIve_
                 }
             }
             Console.WriteLine(depth * hor);
-
         }
     }
 }
